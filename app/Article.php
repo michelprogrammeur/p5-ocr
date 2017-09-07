@@ -18,4 +18,14 @@ class Article extends Model
         'abstract',
         'content'
     ];
+
+    // One article have many pictures
+    public function pictures() {
+        return $this->hasMany('App\Picture');
+    }
+
+    // Many articles for an user
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
 }

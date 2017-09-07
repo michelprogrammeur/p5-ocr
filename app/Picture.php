@@ -20,4 +20,19 @@ class Picture extends Model
         'alt',
         'type'
     ];
+
+    // One picture for an user
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
+
+    // One picture for one observation
+    public function observation() {
+        return $this->belongsTo('App\Observation');
+    }
+
+    // Many pictures for an article
+    public function article() {
+        return $this->belongsTo('App\Article');
+    }
 }

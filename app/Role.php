@@ -15,4 +15,9 @@ class Role extends Model
         'name',
         'description'
     ];
+
+    // One role have one OR many users ( pivot table )
+    public function users() {
+        return $this->belongsToMany('App\User')->withTimestamps();
+    }
 }

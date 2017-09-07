@@ -25,4 +25,19 @@ class Observation extends Model
         'comment',
         'status'
     ];
+
+    // Many observations for a user
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
+
+    // Many observations for a taxref
+    public function taxref() {
+        return $this->belongsTo('App\Taxref');
+    }
+
+    // One observation has one picture
+    public function picture() {
+        return $this->hasOne('App\Picture');
+    }
 }
