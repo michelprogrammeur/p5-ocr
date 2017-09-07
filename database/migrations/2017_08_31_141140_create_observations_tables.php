@@ -15,7 +15,7 @@ class CreateObservationsTables extends Migration
     {
         Schema::create('observations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('taxref_id')->unsigned();
+            $table->integer('taxref_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('matureStage');
             $table->string('plumage');
