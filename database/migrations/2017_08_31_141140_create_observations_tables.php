@@ -23,7 +23,7 @@ class CreateObservationsTables extends Migration
             $table->integer('quantity');
             $table->date('dateAt');
             $table->time('hourAt');
-            $table->string('departement');
+            $table->string('department');
             $table->string('latitude');
             $table->string('longitude');
             $table->text('comment')->nullable();
