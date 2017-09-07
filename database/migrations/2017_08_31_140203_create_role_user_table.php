@@ -17,8 +17,8 @@ class CreateRoleUserTable extends Migration
             $table->increments('id');
             $table->integer('role_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('SET NULL');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
+            $table->foreign('role_id')->references('id')->on('roles')->delete('SET NULL');
+            $table->foreign('user_id')->references('id')->on('users')->delete('SET NULL');
             $table->timestamps();
         });
     }
