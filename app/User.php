@@ -21,6 +21,7 @@ class User extends Authenticatable
         'job',
         'phone',
         'email',
+        'password',
         'confirmation_token',
     ];
 

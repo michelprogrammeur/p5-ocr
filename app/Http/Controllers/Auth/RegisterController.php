@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Role;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -48,9 +49,11 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
+            'pseudo' => 'required|string|regex:/^[a-zA-Z0-9_]{3,50}$/',
+            'firstname' => 'required|string|min:2|max:255',
+            'lastname' => 'required|string|min:2|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/|confirmed',
         ]);
     }
 
@@ -62,10 +65,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+        $user = User::create([
+            'pseudo' => $data['pseudo'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'email'  => $data['email'],
+            'password' => bcrypt($data['password'])
         ]);
+        $user->roles()->attach(Role::where('name', 'visiteur')->first());
+
+        return $user;
     }
 }
