@@ -14,6 +14,7 @@
 Route::get('/', 'FrontController@index');
 
 Auth::routes();
+Route::get('/confirm/{id}/{token}', 'Auth\RegisterController@confirm');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', 'UserController@index')->name('dashboard');

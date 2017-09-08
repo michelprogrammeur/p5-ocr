@@ -14,6 +14,11 @@
         @include('partials.nav')
     </header>
 
+    <!-- messages -->
+    <div>
+        @include('partials.messages')
+    </div>
+
     <main>
         @yield('content')
     </main>
