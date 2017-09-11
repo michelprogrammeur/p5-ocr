@@ -1,5 +1,5 @@
 @extends('layouts.master')
 
 @section('content')
-    <li><a href="{{ url('posts') }}">Articles</a></li>
+    <h1>Dashboard Utilisateur</h1>
 @endsection

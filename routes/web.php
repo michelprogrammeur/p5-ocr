@@ -19,6 +19,9 @@ Route::get('/confirm/{id}/{token}', 'Auth\RegisterController@confirm');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', 'UserController@index')->name('dashboard');
 
-    Route::resource('/articles', 'ArticleController');
+    Route::group(['middleware' => 'admin'], function () {
+        Route::resource('/articles', 'ArticleController');
+    });
+
 });
 
