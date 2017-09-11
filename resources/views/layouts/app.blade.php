@@ -10,13 +10,18 @@
     <!-- Styles -->
 </head>
 <body>
-<header>
-    @include('partials.nav')
-</header>
+    <header>
+        @include('partials.nav')
+    </header>
 
-<main>
-    @yield('content')
-</main>
+    <!-- messages -->
+    <div>
+        @include('partials.messages')
+    </div>
+
+    <main>
+        @yield('content')
+    </main>
 
     @yield('scripts')
 </body>

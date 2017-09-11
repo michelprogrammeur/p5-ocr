@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Notifications\RegisteredUser;
+use App\Role;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -27,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -39,6 +43,29 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        event(new Registered($user = $this->create($request->all())));
+        $user->notify(new RegisteredUser());
+        return redirect('/login')->with('success', "Votre compte a bien été créé, vous devez le comfirmer avec l'email que vous allez recevoir");
+    }
+
+
+    public function confirm($id, $token) {
+        $user = User::where('id', $id)->where('confirmation_token', $token)->first();
+
+        if ($user) {
+            $user->update(['confirmation_token' => null]);
+            $this->guard()->login($user);
+
+            return redirect($this->redirectPath())->with('success', "Votre à bien été confirmé.");
+        } else {
+            return redirect('/login')->with('error', "Ce lien ne semble plus valide.");
+        }
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -48,9 +75,11 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
+            'pseudo' => 'required|string|regex:/^[a-zA-Z0-9_]{3,50}$/',
+            'firstname' => 'required|string|min:2|max:255',
+            'lastname' => 'required|string|min:2|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/|confirmed',
         ]);
     }
 
@@ -62,10 +91,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+        $user = User::create([
+            'pseudo' => $data['pseudo'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'email'  => $data['email'],
             'password' => bcrypt($data['password']),
+            'confirmation_token' => str_replace('/', '', bcrypt(str_random(20)))
         ]);
+        $user->roles()->attach(Role::where('name', 'visiteur')->first());
+
+        return $user;
     }
 }
