@@ -26,13 +26,17 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        if($user->hasAnyRole(['visiteur', 'colaborateur', 'admin'])) {
-            $request->user()->authorizeRoles(['visiteur', 'colaborateur', 'admin']);
+        if(Auth::user()->hasRole('visiteur')) {
+            $request->user()->authorizeRoles(['visiteur']);
 
-            return view('users.dashboard', compact('user'));
+            return view('users.dashboard');
+        }
+        elseif (Auth::user()->hasRole('admin')) {
+            $request->user()->authorizeRoles(['admin']);
+
+            return view('users.admins.dashboard');
         }
         else {
-
             return view('/');
         }
     }
